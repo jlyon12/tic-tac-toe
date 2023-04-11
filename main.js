@@ -26,8 +26,8 @@ const playGame = (() => {
 	const newGame = () => {};
 
 	let activePlayer = playerA;
-	let winningPlayer;
 	let gameOver = false;
+	let showResult;
 
 	const board = gameBoard.getBoard();
 
@@ -37,7 +37,7 @@ const playGame = (() => {
 			? (activePlayer = playerB)
 			: (activePlayer = playerA);
 	};
-	const checkWinner = () => {
+	const confirmWin = () => {
 		const winConditions = [
 			[0, 1, 2],
 			[3, 4, 5],
@@ -52,38 +52,50 @@ const playGame = (() => {
 			winCond.every((index) => board[index] === activePlayer.marker)
 		);
 	};
+	const confirmDraw = () => {
+		const fullBoard = !board.some((index) => index === null);
+		let isDraw;
+		if (fullBoard === true && confirmWin() === false) {
+			isDraw = true;
+			return isDraw;
+		}
+	};
+
+	const checkResult = (player) => {
+		if (confirmWin() === true) {
+			showResult = `GAME OVER: ${player.name} has won. Congratulations!`;
+			gameOver = true;
+		}
+		if (confirmDraw() === true) {
+			showResult = `GAME OVER: It's a draw.`;
+			gameOver = true;
+		}
+	};
+
 	const makeMove = (player, index) => {
 		if (gameOver === false) {
 			if (board[index] === null) {
 				board[index] = player.marker;
-				if (checkWinner() === true) {
-					console.log(`GAME OVER ~ ${player.name} has won. Congratulations!`);
-					gameOver = true;
-					winningPlayer = player;
-				}
+				checkResult(player);
+				alternateTurn();
 			}
-		} else {
-			console.log(
-				`INVALID MOVE ~ ${winningPlayer.name} has won already. Please try again. `
-			);
 		}
 	};
 	const renderBoard = (() => {
 		const $cells = document.querySelectorAll(".cell");
-		const $showCurrentPlayer = document.querySelector("#currentTurnText");
-		$showCurrentPlayer.textContent = `${activePlayer.name}, you are first to play.`;
+		const $gameText = document.querySelector("#gameText");
+		$gameText.textContent = `${activePlayer.name}, you are first to play.`;
 		$cells.forEach((cell) => {
 			cell.addEventListener("click", (e) => {
 				const clickedCell = e.target.id;
 				makeMove(activePlayer, clickedCell);
-				alternateTurn();
+
 				if (gameOver === false) {
-					$showCurrentPlayer.textContent = `${activePlayer.name}, it is your turn.`;
+					$gameText.textContent = `${activePlayer.name}, it is your turn.`;
 				}
 				if (gameOver === true) {
-					$showCurrentPlayer.textContent = `GAME OVER : ${winningPlayer.name} has won!`;
+					$gameText.textContent = showResult;
 				}
-
 				cell.textContent = board[clickedCell];
 			});
 		});
