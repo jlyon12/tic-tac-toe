@@ -1,0 +1,53 @@
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.game {
+    text-align: center;
+}
+
+.gameBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+
+    height: 500px;
+    aspect-ratio: 1;
+}
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    ;
+    font-size: 2rem
+}
+
+.cell:nth-of-type(1),
+.cell:nth-of-type(2),
+.cell:nth-of-type(3) {
+    border-bottom: 1px solid black;
+}
+
+.cell:nth-of-type(7),
+.cell:nth-of-type(8),
+.cell:nth-of-type(9) {
+    border-top: 1px solid black;
+}
+
+.cell:nth-of-type(1),
+.cell:nth-of-type(4),
+.cell:nth-of-type(7) {
+    border-right: 1px solid black;
+}
+
+.cell:nth-of-type(3),
+.cell:nth-of-type(6),
+.cell:nth-of-type(9) {
+    border-left: 1px solid black;
+}

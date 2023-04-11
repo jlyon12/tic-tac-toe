@@ -68,5 +68,25 @@ const playGame = (() => {
 			);
 		}
 	};
-	return { activePlayer, alternateTurn, makeMove, newGame };
+	const renderBoard = (() => {
+		const $cells = document.querySelectorAll(".cell");
+		const $showCurrentPlayer = document.querySelector("#currentTurnText");
+		$showCurrentPlayer.textContent = `${activePlayer.name}, you are first to play.`;
+		$cells.forEach((cell) => {
+			cell.addEventListener("click", (e) => {
+				const clickedCell = e.target.id;
+				makeMove(activePlayer, clickedCell);
+				alternateTurn();
+				if (gameOver === false) {
+					$showCurrentPlayer.textContent = `${activePlayer.name}, it is your turn.`;
+				}
+				if (gameOver === true) {
+					$showCurrentPlayer.textContent = `GAME OVER : ${winningPlayer.name} has won!`;
+				}
+
+				cell.textContent = board[clickedCell];
+			});
+		});
+	})();
+	return { activePlayer, alternateTurn, makeMove, newGame, board };
 })();
