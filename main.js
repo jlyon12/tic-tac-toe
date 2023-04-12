@@ -22,11 +22,16 @@ const gameBoard = (() => {
 	return { resetBoard, getBoard };
 })();
 
+// Logic for playing Tic-Tac-Toe
 const gameLogic = (() => {
 	let activePlayer = playerA;
+	const getActivePlayer = () => activePlayer;
 	let firstTurn = true;
+	const getFirstTurn = () => firstTurn;
 	let gameOver = false;
+	const getGameOver = () => gameOver;
 	let showResult;
+	const getResult = () => showResult;
 
 	const newGame = () => {
 		activePlayer = playerA;
@@ -88,38 +93,54 @@ const gameLogic = (() => {
 			}
 		}
 	};
-	const displayController = (() => {
-		const $cells = document.querySelectorAll(".cell");
-		const $gameText = document.querySelector("#gameText");
-		const $resetBtn = document.getElementById("resetBtn");
 
-		const updateGameText = () => {
-			if (firstTurn === true) {
-				$gameText.textContent = `${activePlayer.name}, you are first to play.`;
-			} else if (gameOver === false) {
-				$gameText.textContent = `${activePlayer.name}, it is your turn.`;
-			}
-			if (gameOver === true) {
-				$gameText.textContent = showResult;
-			}
-		};
+	return {
+		getActivePlayer,
+		getFirstTurn,
+		getGameOver,
+		getResult,
+		board,
+		alternateTurn,
+		makeMove,
+		newGame,
+	};
+})();
+
+// Update DOM using gameLogic
+const displayController = (() => {
+	const $cells = document.querySelectorAll(".cell");
+	const $gameText = document.querySelector("#gameText");
+	const $resetBtn = document.getElementById("resetBtn");
+
+	const updateGameText = () => {
+		if (gameLogic.getFirstTurn() === true) {
+			$gameText.textContent = `${
+				gameLogic.getActivePlayer().name
+			}, you are first to play.`;
+		} else if (gameLogic.getGameOver() === false) {
+			$gameText.textContent = `${
+				gameLogic.getActivePlayer().name
+			}, it is your turn.`;
+		}
+		if (gameLogic.getGameOver() === true) {
+			$gameText.textContent = gameLogic.getResult();
+		}
+	};
+	updateGameText();
+	$cells.forEach((cell) => {
+		cell.addEventListener("click", (e) => {
+			const clickedCell = e.target.id;
+			gameLogic.makeMove(gameLogic.getActivePlayer(), clickedCell);
+			updateGameText();
+			cell.textContent = gameLogic.board[clickedCell];
+		});
+	});
+
+	$resetBtn.onclick = () => {
+		gameLogic.newGame();
 		updateGameText();
 		$cells.forEach((cell) => {
-			cell.addEventListener("click", (e) => {
-				const clickedCell = e.target.id;
-				makeMove(activePlayer, clickedCell);
-				updateGameText();
-				cell.textContent = board[clickedCell];
-			});
+			cell.textContent = "";
 		});
-
-		$resetBtn.onclick = () => {
-			newGame();
-			updateGameText();
-			$cells.forEach((cell) => {
-				cell.textContent = "";
-			});
-		};
-	})();
-	return { activePlayer, alternateTurn, makeMove, newGame, board };
+	};
 })();
