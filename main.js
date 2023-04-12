@@ -113,6 +113,7 @@ const displayController = (() => {
 	const $startGameBtn = document.getElementById("startGameBtn");
 	const $newGameModule = document.getElementById("newGameModule");
 	const $game = document.getElementById("game");
+	const $gameBoard = document.getElementById("gameBoard");
 	const $cells = document.querySelectorAll(".cell");
 	const $gameText = document.getElementById("gameText");
 	const $resetBtn = document.getElementById("resetBtn");
@@ -121,9 +122,14 @@ const displayController = (() => {
 	const eraseBoard = () => {
 		$cells.forEach((cell) => {
 			cell.textContent = "";
+			cell.classList.remove("X");
+			cell.classList.remove("O");
 		});
 	};
 	const updateGameText = () => {
+		$gameBoard.classList.remove("fade");
+		$gameText.classList.remove("X");
+		$gameText.classList.remove("O");
 		if (gameLogic.getFirstTurn() === true) {
 			$gameText.textContent = `${
 				gameLogic.getActivePlayer().name
@@ -135,6 +141,10 @@ const displayController = (() => {
 		}
 		if (gameLogic.getGameOver() === true) {
 			$gameText.textContent = gameLogic.getResult();
+			$gameBoard.classList.add("fade");
+			if (gameLogic.getResult() !== "GAME OVER: It's a draw.") {
+				$gameText.classList.add(gameLogic.getActivePlayer().marker);
+			}
 		}
 	};
 
@@ -144,6 +154,7 @@ const displayController = (() => {
 			gameLogic.makeMove(gameLogic.getActivePlayer(), clickedCell);
 			updateGameText();
 			cell.textContent = gameLogic.board[clickedCell];
+			cell.classList.add(gameLogic.getActivePlayer().marker);
 		});
 	});
 	$startGameBtn.addEventListener("click", (e) => {
