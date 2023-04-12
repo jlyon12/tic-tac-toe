@@ -1,8 +1,8 @@
 // Player Factory
 const Player = (name, marker) => ({ name, marker });
 
-const playerA = Player("Jarrett", "X");
-const playerB = Player("Ben", "O");
+let playerA = Player("Player 1", "X");
+let playerB = Player("Player 2", "O");
 
 // gameBoard Object
 const gameBoard = (() => {
@@ -108,6 +108,11 @@ const gameLogic = (() => {
 
 // Update DOM using gameLogic
 const displayController = (() => {
+	const $playerOneName = document.getElementById("playerOne");
+	const $playerTwoName = document.getElementById("playerTwo");
+	const $startGameBtn = document.getElementById("startGameBtn");
+	const $newGameModule = document.getElementById("newGameModule");
+	const $game = document.getElementById("game");
 	const $cells = document.querySelectorAll(".cell");
 	const $gameText = document.querySelector("#gameText");
 	const $resetBtn = document.getElementById("resetBtn");
@@ -126,7 +131,7 @@ const displayController = (() => {
 			$gameText.textContent = gameLogic.getResult();
 		}
 	};
-	updateGameText();
+
 	$cells.forEach((cell) => {
 		cell.addEventListener("click", (e) => {
 			const clickedCell = e.target.id;
@@ -135,7 +140,18 @@ const displayController = (() => {
 			cell.textContent = gameLogic.board[clickedCell];
 		});
 	});
-
+	$startGameBtn.addEventListener("click", (e) => {
+		e.preventDefault();
+		$newGameModule.classList.add("hidden");
+		$game.classList.remove("hidden");
+		playerA = Player($playerOneName.value, "X");
+		playerB = Player($playerTwoName.value, "O");
+		gameLogic.newGame();
+		updateGameText();
+		$cells.forEach((cell) => {
+			cell.textContent = "";
+		});
+	});
 	$resetBtn.onclick = () => {
 		gameLogic.newGame();
 		updateGameText();

@@ -18,7 +18,18 @@
             <h1 class="title">Tic-Tac-Toe</h1>
         </header>
         <main class="main">
-            <section class="game">
+            <section class="initGame">
+                <div class="module" id="newGameModule">
+                    <form class="form" action="">
+                        <label for="playerOne" class="formControl">Player One:
+                            <input type="text" name="playerOne" id="playerOne" placeholder="Player 1"></label>
+                        <label for="playerTwo" class="formControl">Player Two:
+                            <input type="text" name="playerTwo" id="playerTwo" placeholder="Player 2"></label>
+                        <button type="submit" id="startGameBtn">Start</button>
+                    </form>
+                </div>
+            </section>
+            <section class="game hidden" id="game">
                 <p id="gameText"></p>
                 <div id="gameBoard" class="gameBoard">
                     <div class="cell" id="0"></div>
@@ -31,10 +42,9 @@
                     <div class="cell" id="7"></div>
                     <div class="cell" id="8"></div>
                 </div>
-            </section>
-            <section class="gameControls">
                 <button class=" button" id="resetBtn">Play Again</button>
             </section>
+
 
         </main>
         <footer class="footer">
