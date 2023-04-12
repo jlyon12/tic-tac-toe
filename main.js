@@ -114,9 +114,15 @@ const displayController = (() => {
 	const $newGameModule = document.getElementById("newGameModule");
 	const $game = document.getElementById("game");
 	const $cells = document.querySelectorAll(".cell");
-	const $gameText = document.querySelector("#gameText");
+	const $gameText = document.getElementById("gameText");
 	const $resetBtn = document.getElementById("resetBtn");
+	const $newGameBtn = document.getElementById("newGameBtn");
 
+	const eraseBoard = () => {
+		$cells.forEach((cell) => {
+			cell.textContent = "";
+		});
+	};
 	const updateGameText = () => {
 		if (gameLogic.getFirstTurn() === true) {
 			$gameText.textContent = `${
@@ -149,15 +155,19 @@ const displayController = (() => {
 		playerB = Player($playerTwoName.value || "Player Two", "O");
 		gameLogic.newGame();
 		updateGameText();
-		$cells.forEach((cell) => {
-			cell.textContent = "";
-		});
+		eraseBoard();
 	});
 	$resetBtn.onclick = () => {
 		gameLogic.newGame();
 		updateGameText();
-		$cells.forEach((cell) => {
-			cell.textContent = "";
-		});
+		eraseBoard();
+	};
+	$newGameBtn.onclick = () => {
+		$game.classList.add("hidden");
+		$newGameModule.classList.remove("hidden");
+		$playerOneName.value = null;
+		$playerTwoName.value = null;
+		gameLogic.newGame();
+		eraseBoard();
 	};
 })();
