@@ -144,8 +144,9 @@ const displayController = (() => {
 		e.preventDefault();
 		$newGameModule.classList.add("hidden");
 		$game.classList.remove("hidden");
-		playerA = Player($playerOneName.value, "X");
-		playerB = Player($playerTwoName.value, "O");
+
+		playerA = Player($playerOneName.value || "Player One", "X");
+		playerB = Player($playerTwoName.value || "Player Two", "O");
 		gameLogic.newGame();
 		updateGameText();
 		$cells.forEach((cell) => {
