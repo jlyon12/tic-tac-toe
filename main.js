@@ -22,12 +22,18 @@ const gameBoard = (() => {
 	return { resetBoard, getBoard };
 })();
 
-const playGame = (() => {
-	const newGame = () => {};
-
+const gameLogic = (() => {
 	let activePlayer = playerA;
+	let firstTurn = true;
 	let gameOver = false;
 	let showResult;
+
+	const newGame = () => {
+		activePlayer = playerA;
+		firstTurn = true;
+		gameOver = false;
+		gameBoard.resetBoard();
+	};
 
 	const board = gameBoard.getBoard();
 
@@ -78,27 +84,42 @@ const playGame = (() => {
 				board[index] = player.marker;
 				checkResult(player);
 				alternateTurn();
+				firstTurn = false;
 			}
 		}
 	};
-	const renderBoard = (() => {
+	const displayController = (() => {
 		const $cells = document.querySelectorAll(".cell");
 		const $gameText = document.querySelector("#gameText");
-		$gameText.textContent = `${activePlayer.name}, you are first to play.`;
+		const $resetBtn = document.getElementById("resetBtn");
+
+		const updateGameText = () => {
+			if (firstTurn === true) {
+				$gameText.textContent = `${activePlayer.name}, you are first to play.`;
+			} else if (gameOver === false) {
+				$gameText.textContent = `${activePlayer.name}, it is your turn.`;
+			}
+			if (gameOver === true) {
+				$gameText.textContent = showResult;
+			}
+		};
+		updateGameText();
 		$cells.forEach((cell) => {
 			cell.addEventListener("click", (e) => {
 				const clickedCell = e.target.id;
 				makeMove(activePlayer, clickedCell);
-
-				if (gameOver === false) {
-					$gameText.textContent = `${activePlayer.name}, it is your turn.`;
-				}
-				if (gameOver === true) {
-					$gameText.textContent = showResult;
-				}
+				updateGameText();
 				cell.textContent = board[clickedCell];
 			});
 		});
+
+		$resetBtn.onclick = () => {
+			newGame();
+			updateGameText();
+			$cells.forEach((cell) => {
+				cell.textContent = "";
+			});
+		};
 	})();
 	return { activePlayer, alternateTurn, makeMove, newGame, board };
 })();
