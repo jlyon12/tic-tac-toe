@@ -1,9 +1,6 @@
 // Player Factory
 const Player = (name, marker) => ({ name, marker });
 
-let playerA = Player("Player 1", "X");
-let playerB = Player("Player 2", "O");
-
 // gameBoard Object
 const gameBoard = (() => {
 	const board = [];
@@ -24,6 +21,8 @@ const gameBoard = (() => {
 
 // Logic for playing Tic-Tac-Toe
 const gameLogic = (() => {
+	const playerA = Player("Player 1", "X");
+	const playerB = Player("Player 2", "O");
 	let activePlayer = playerA;
 	const getActivePlayer = () => activePlayer;
 	let firstTurn = true;
@@ -95,6 +94,8 @@ const gameLogic = (() => {
 	};
 
 	return {
+		playerA,
+		playerB,
 		getActivePlayer,
 		getFirstTurn,
 		getGameOver,
@@ -108,6 +109,7 @@ const gameLogic = (() => {
 
 // Update DOM using gameLogic
 const displayController = (() => {
+	const $title = document.querySelector(".title");
 	const $playerOneName = document.getElementById("playerOne");
 	const $playerTwoName = document.getElementById("playerTwo");
 	const $startGameBtn = document.getElementById("startGameBtn");
@@ -159,11 +161,11 @@ const displayController = (() => {
 	});
 	$startGameBtn.addEventListener("click", (e) => {
 		e.preventDefault();
+		$title.classList.add("hidden");
 		$newGameModule.classList.add("hidden");
 		$game.classList.remove("hidden");
-
-		playerA = Player($playerOneName.value || "Player One", "X");
-		playerB = Player($playerTwoName.value || "Player Two", "O");
+		gameLogic.playerA.name = $playerOneName.value || "Player One";
+		gameLogic.playerB.name = $playerTwoName.value || "Player Two";
 		gameLogic.newGame();
 		updateGameText();
 		eraseBoard();
@@ -174,6 +176,7 @@ const displayController = (() => {
 		eraseBoard();
 	};
 	$newGameBtn.onclick = () => {
+		$title.classList.remove("hidden");
 		$game.classList.add("hidden");
 		$newGameModule.classList.remove("hidden");
 		$playerOneName.value = null;

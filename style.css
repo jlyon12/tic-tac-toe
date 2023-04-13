@@ -20,9 +20,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     font-family: var(--ff-primary);
-
+    text-align: center;
+    ;
+    padding: 1rem;
+    gap: 2rem;
 }
 
 .main {
@@ -35,7 +38,8 @@
 }
 
 .title {
-    color: var(--clr-game-text)
+    color: var(--clr-game-text);
+    margin-top: 2rem;
 }
 
 .button {
@@ -51,6 +55,16 @@
 .button:hover {
 
     transform: scale(1.1);
+}
+
+@media screen and (max-width: 400px) {
+    .page-wrapper {
+        font-size: .815rem;
+    }
+
+    .main {
+        gap: 0;
+    }
 }
 
 .form {
@@ -78,6 +92,12 @@
     background-color: hsl(225, 4%, 22%);
     color: var(--clr-text);
     padding: 1rem;
+}
+
+@media screen and (max-width: 400px) {
+    .formControl input {
+        padding: .5rem;
+    }
 }
 
 .game {
@@ -156,6 +176,11 @@
 
 .fade {
     opacity: 50%;
+    ;
+}
+
+.footer {
+    font-size: .815rem;
     ;
 }
 
