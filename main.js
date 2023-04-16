@@ -21,9 +21,12 @@ const gameBoard = (() => {
 
 // Logic for playing Tic-Tac-Toe
 const gameLogic = (() => {
+	const board = gameBoard.getBoard();
 	const playerA = Player("Player 1", "X");
 	const playerB = Player("Player 2", "O");
 	let activePlayer = playerA;
+	let winningPlayer;
+	const getWinner = () => winningPlayer;
 	const getActivePlayer = () => activePlayer;
 	let firstTurn = true;
 	const getFirstTurn = () => firstTurn;
@@ -38,8 +41,6 @@ const gameLogic = (() => {
 		gameOver = false;
 		gameBoard.resetBoard();
 	};
-
-	const board = gameBoard.getBoard();
 
 	const alternateTurn = () => {
 		// eslint-disable-next-line no-unused-expressions
@@ -75,6 +76,7 @@ const gameLogic = (() => {
 		if (confirmWin() === true) {
 			showResult = `GAME OVER: ${player.name} has won. Congratulations!`;
 			gameOver = true;
+			winningPlayer = player;
 		}
 		if (confirmDraw() === true) {
 			showResult = `GAME OVER: It's a draw.`;
@@ -100,8 +102,8 @@ const gameLogic = (() => {
 		getFirstTurn,
 		getGameOver,
 		getResult,
+		getWinner,
 		board,
-		alternateTurn,
 		makeMove,
 		newGame,
 	};
@@ -145,20 +147,26 @@ const displayController = (() => {
 			$gameText.textContent = gameLogic.getResult();
 			$gameBoard.classList.add("fade");
 			if (gameLogic.getResult() !== "GAME OVER: It's a draw.") {
-				$gameText.classList.add(gameLogic.getActivePlayer().marker);
+				$gameText.classList.add(gameLogic.getWinner().marker);
 			}
 		}
 	};
-
+	const updateBoard = () => {
+		$cells.forEach((cell) => {
+			const index = cell.getAttribute("id");
+			cell.textContent = gameLogic.board[index];
+			cell.classList.add(gameLogic.board[index]);
+		});
+	};
 	$cells.forEach((cell) => {
 		cell.addEventListener("click", (e) => {
 			const clickedCell = e.target.id;
 			gameLogic.makeMove(gameLogic.getActivePlayer(), clickedCell);
+			updateBoard();
 			updateGameText();
-			cell.textContent = gameLogic.board[clickedCell];
-			cell.classList.add(gameLogic.getActivePlayer().marker);
 		});
 	});
+
 	$startGameBtn.addEventListener("click", (e) => {
 		e.preventDefault();
 		$title.classList.add("hidden");
