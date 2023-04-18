@@ -20,6 +20,9 @@ Visit the **Live Demo** <a href="https://probableactions.github.io/tic-tac-toe/"
 
 ## Version History
 
+- 1.1
+  - Added the ability to play the game against a computer player.
+  - Computer logic is randomly generated based on if a space is occupied or not.
 - 1.0
   - Initial Release
   - Human vs. Human game mode

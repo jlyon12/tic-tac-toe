@@ -23,11 +23,11 @@ const gameBoard = (() => {
 const gameLogic = (() => {
 	const board = gameBoard.getBoard();
 	const playerA = Player("Player 1", "X");
-	const playerB = Player("Player 2", "O");
+	let playerB = Player("Player 2", "O");
 	let activePlayer = playerA;
+	const getActivePlayer = () => activePlayer;
 	let winningPlayer;
 	const getWinner = () => winningPlayer;
-	const getActivePlayer = () => activePlayer;
 	let firstTurn = true;
 	const getFirstTurn = () => firstTurn;
 	let gameOver = false;
@@ -41,9 +41,14 @@ const gameLogic = (() => {
 		gameOver = false;
 		gameBoard.resetBoard();
 	};
+	const enableComputer = () => {
+		playerB = Player("Computer", "O");
+	};
+	const disableComputer = () => {
+		playerB = Player("Player 2", "O");
+	};
 
 	const alternateTurn = () => {
-		// eslint-disable-next-line no-unused-expressions
 		activePlayer === playerA
 			? (activePlayer = playerB)
 			: (activePlayer = playerA);
@@ -74,7 +79,7 @@ const gameLogic = (() => {
 
 	const checkResult = (player) => {
 		if (confirmWin() === true) {
-			showResult = `GAME OVER: ${player.name} has won. Congratulations!`;
+			showResult = `GAME OVER: ${player.name} has won!`;
 			gameOver = true;
 			winningPlayer = player;
 		}
@@ -95,9 +100,29 @@ const gameLogic = (() => {
 		}
 	};
 
+	const makeComputerMove = () => {
+		const possibleMoves = board
+			.map((cell, i) => (cell === null ? i : -1))
+			.filter((index) => index !== -1);
+
+		const randomMove = () =>
+			possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+		if (gameOver === false) {
+			board[randomMove()] = playerB.marker;
+			checkResult(playerB);
+			alternateTurn();
+		}
+	};
+	const playerATurns = () =>
+		board.filter((cell) => cell === playerA.marker).length;
+	const playerBTurns = () =>
+		board.filter((cell) => cell === playerB.marker).length;
+
 	return {
 		playerA,
 		playerB,
+		enableComputer,
+		disableComputer,
 		getActivePlayer,
 		getFirstTurn,
 		getGameOver,
@@ -105,6 +130,9 @@ const gameLogic = (() => {
 		getWinner,
 		board,
 		makeMove,
+		makeComputerMove,
+		playerATurns,
+		playerBTurns,
 		newGame,
 	};
 })();
@@ -114,6 +142,7 @@ const displayController = (() => {
 	const $title = document.querySelector(".title");
 	const $playerOneName = document.getElementById("playerOne");
 	const $playerTwoName = document.getElementById("playerTwo");
+	const $gameType = document.getElementById("gameType");
 	const $startGameBtn = document.getElementById("startGameBtn");
 	const $newGameModule = document.getElementById("newGameModule");
 	const $game = document.getElementById("game");
@@ -123,6 +152,28 @@ const displayController = (() => {
 	const $resetBtn = document.getElementById("resetBtn");
 	const $newGameBtn = document.getElementById("newGameBtn");
 
+	$gameType.addEventListener("click", () => {
+		if ($gameType.checked) {
+			$playerTwoName.value = "Computer";
+			$playerTwoName.classList.add("fade");
+			$playerTwoName.disabled = true;
+			gameLogic.enableComputer();
+		} else if (!$gameType.checked) {
+			$playerTwoName.value = null;
+			$playerTwoName.classList.remove("fade");
+			$playerTwoName.disabled = false;
+			gameLogic.disableComputer();
+		}
+	});
+
+	const checkGameType = () => {
+		if ($gameType.checked) {
+			gameLogic.enableComputer();
+			$playerTwoName.value = "Computer";
+		} else {
+			gameLogic.disableComputer();
+		}
+	};
 	const eraseBoard = () => {
 		$cells.forEach((cell) => {
 			cell.textContent = "";
@@ -139,9 +190,12 @@ const displayController = (() => {
 				gameLogic.getActivePlayer().name
 			}, you are first to play.`;
 		} else if (gameLogic.getGameOver() === false) {
-			$gameText.textContent = `${
-				gameLogic.getActivePlayer().name
-			}, it is your turn.`;
+			if (!$gameType.checked) {
+				$gameText.textContent = `${
+					gameLogic.getActivePlayer().name
+				}, it is your turn.`;
+			} else
+				$gameText.textContent = `${gameLogic.playerA.name} vs. ${gameLogic.playerB.name}`;
 		}
 		if (gameLogic.getGameOver() === true) {
 			$gameText.textContent = gameLogic.getResult();
@@ -158,10 +212,18 @@ const displayController = (() => {
 			cell.classList.add(gameLogic.board[index]);
 		});
 	};
+
 	$cells.forEach((cell) => {
 		cell.addEventListener("click", (e) => {
 			const clickedCell = e.target.id;
 			gameLogic.makeMove(gameLogic.getActivePlayer(), clickedCell);
+			if (
+				gameLogic.playerB.name === "Computer" &&
+				gameLogic.playerATurns() > gameLogic.playerBTurns()
+			) {
+				gameLogic.makeComputerMove();
+			}
+
 			updateBoard();
 			updateGameText();
 		});
@@ -172,11 +234,12 @@ const displayController = (() => {
 		$title.classList.add("hidden");
 		$newGameModule.classList.add("hidden");
 		$game.classList.remove("hidden");
-		gameLogic.playerA.name = $playerOneName.value || "Player One";
-		gameLogic.playerB.name = $playerTwoName.value || "Player Two";
+		gameLogic.playerA.name = $playerOneName.value || "Player 1";
+		gameLogic.playerB.name = $playerTwoName.value || "Player 2";
 		gameLogic.newGame();
 		updateGameText();
 		eraseBoard();
+		checkGameType();
 	});
 	$resetBtn.onclick = () => {
 		gameLogic.newGame();
@@ -191,5 +254,6 @@ const displayController = (() => {
 		$playerTwoName.value = null;
 		gameLogic.newGame();
 		eraseBoard();
+		checkGameType();
 	};
 })();

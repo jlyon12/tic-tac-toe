@@ -86,13 +86,55 @@
 
 }
 
-.formControl input {
+.formControl:nth-of-type(3) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+
+}
+
+.formControl input[type="text"] {
     appearance: none;
     border: transparent;
     border-radius: 8px;
     background-color: hsl(225, 4%, 22%);
     color: var(--clr-text);
     padding: 1rem;
+}
+
+.formControl input[type="checkbox"] {
+    display: grid;
+    place-content: center;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    height: 2.5rem;
+    width: 2.5rem;
+    appearance: none;
+    border: transparent;
+    border-radius: 8px;
+    background-color: hsl(225, 4%, 22%);
+    color: var(--clr-text);
+    padding: 1rem;
+}
+
+.formControl input[type="checkbox"]::before {
+    content: "";
+    background-color: var(--clr-game-text);
+    width: 1.75rem;
+    height: 1.75rem;
+    transform: scale(0);
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.formControl input[type="checkbox"]:checked::before {
+    transform: scale(1);
 }
 
 @media screen and (max-width: 400px) {
