@@ -10,7 +10,7 @@ This was created using HTML, CSS and vanilla JavaScript. The purpose of this pro
 
 ## Getting Started
 
-Visit the **Live Demo** <a href="https://probableactions.github.io/tic-tac-toe/"> here</a>.
+Visit the **Live Demo** <a href="https://jlyon12.github.io/tic-tac-toe/"> here</a>.
 
 - (optional) Enter the desired player names.
 - Click "Start Game"
